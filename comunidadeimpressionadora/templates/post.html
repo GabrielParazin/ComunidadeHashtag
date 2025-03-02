@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <h1 style="color : green">Comunidade</h1>
+
+    <div class="row border mt-4 p-3 meupost">   <!-- a tela tem 12 de tamanho -->
+        <div class="col col-3">
+            <div class="image pe-2"><img
+                    src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}"
+                    class="rounded" width="200"></div>
+            <strong>{{ post.autor.username }}</strong>
+            <div class="col">
+                <strong>Cursos</strong><br>
+                {% for curso in post.autor.cursos.split(';') %}
+                <button type="button" class="btn btn-success mt-4" disabled>{{ curso }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col col-9">
+            <h3>
+                {{ post.titulo }}
+                <small class="text-muted" style="font-size: 15px"> Data de criação {{ post.data_criacao.strftime('%d/%m/%Y') }} <!-- padrao de data a ser seguido -->
+                    {% if form %}
+                    - <a href="#form_editarpost">Editar perfil</a> / <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Excluir post</a> <!-- link pra pop up, tem que ser assim, hashtag sozinha, data toglle classe, data target id do modal -->
+                    {% endif %}
+                </small>
+            </h3>
+            <p>{{ post.corpo }}</p>
+        </div>
+    </div>
+
+</div>
+
+{% if form %} <!-- para mostrar só pro dono do formulario -->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <form method="post" action="" id="form_editarpost" class="border p-4 mt-2">
+                {{ form.csrf_token}}
+                <legend>Editar post</legend>
+                <fieldset>
+                    <div class="form-group">
+                        {{ form.titulo.label(class="form-control-label") }}
+                        {% if form.titulo.errors %}
+                        {{ form.titulo(class="form-control is-invalid") }} <!-- se der erro -->
+                        <div class="invalid-feedback">
+                            {% for erro in form.titulo.errors %}
+                            {{ erro }}
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.titulo(class="form-control") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.corpo.label(class="form-control-label") }}
+                        {% if form.corpo.errors %}
+                        {{ form.corpo(class="form-control is-invalid") }} <!-- se der erro -->
+                        <div class="invalid-feedback">
+                            {% for erro in form.corpo.errors %}
+                            {{ erro }}
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.corpo(class="form-control") }}
+                        {% endif %}
+                    </div>
+                </fieldset>
+                {{ form.botao_submit(class="btn btn-primary mt-2") }}
+            </form>
+        </div>
+
+        <p></p>
+    </div>
+</div>
+{% endif %}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Exclusao de post</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Deseja excluir ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+          <form method="POST" action="{{ url_for('excluir_post', post_id=post.id) }}"> <!-- açao: o que ele faz-->
+        <button type="submit" class="btn btn-primary">Sim</button>
+              </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

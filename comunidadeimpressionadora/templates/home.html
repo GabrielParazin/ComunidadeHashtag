@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <h1 style="color : green">Comunidade</h1>
+    <p>Faça login ou cadastre-se</p>
+    <p>Crie seu post</p>
+    <hr>
+    {% for post in posts %}
+    <div class="row border mt-4 p-3 meupost">   <!-- a tela tem 12 de tamanho -->
+        <div class="col col-3">
+            <div class="image pe-2"><img
+                    src="{{ url_for('static', filename='fotos_perfil/{}'.format(post.autor.foto_perfil)) }}"
+                    class="rounded" width="200"></div>
+            <strong>{{ post.autor.username }}</strong>
+                <div class="col">
+                    <strong>Cursos</strong><br>
+                    {% for curso in post.autor.cursos.split(';') %}
+                    <button type="button" class="btn btn-success mt-4" disabled>{{ curso }}</button>
+                    {% endfor %}
+                </div>
+        </div>
+        <div class="col col-9">
+           <a href="{{ url_for('exibir_post', post_id=post.id) }}"><h3>{{ post.titulo }}</h3></a> <!-- style="text-decoration: none" -->
+            <p>{{ post.corpo }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
