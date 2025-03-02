@@ -9,6 +9,7 @@ from flask_login import LoginManager
 import os
 import sqlalchemy
 
+
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '70abbb5e00c9f5b1'
