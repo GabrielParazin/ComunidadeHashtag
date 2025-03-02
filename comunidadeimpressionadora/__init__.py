@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 import os
+import sqlalchemy
 
 app = Flask(__name__)
 
@@ -25,5 +26,22 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'   #direcionar para login quando for visitante
 login_manager.login_message_category = 'alert-info'
+
+
+#criar um engine para avaliar nosso bd
+#nspector é para inspecionar a engine
+#se naot iver um bd com a tabela usuario nbao serve, entao ja deleta
+#tem que importar o models
+from comunidadeimpressionadora import models
+engine = sqlalchemy.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+inspector = sqlalchemy.inspect(engine)
+if not inspector.has_table('usuario'):          #tudo minusculo
+    with app.app_context():
+        database.drop_all()
+        database.create_all()
+        print('Criou o BD')
+else:
+    print('BD já existe')
+
 
 from comunidadeimpressionadora import routes  #tem que ser depois
