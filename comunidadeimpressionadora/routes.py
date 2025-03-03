@@ -52,7 +52,7 @@ def login():
 
 
     if form_criarconta.validate_on_submit() and 'botao_submit_criarconta' in request.form:
-        senha_cript = bcrypt.generate_password_hash(form_criarconta.senha.data)
+        senha_cript = bcrypt.generate_password_hash(form_criarconta.senha.data).decode('utf-8')   #enconding e decode
         usuario = Usuario(username=form_criarconta.username.data, email=form_criarconta.email.data, senha=senha_cript)
         database.session.add(usuario)
         database.session.commit()
